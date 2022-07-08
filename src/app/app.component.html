@@ -9,5 +9,17 @@
       Connect your wallet
     </button>
   </div>
+  <div class="flex flex-col p-3">
+    <H2> {{ balance }}</H2>
+    <button class="bg-orange-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" (click)="GetBalance()" >
+      Get your balance
+    </button>
+  </div>
+  <div class="flex flex-col p-3">
+    <H2> {{ price }}</H2>
+    <button class="bg-orange-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" (click)="GetPrice()" >
+      Get euro price
+    </button>
+  </div>
 
 </div>

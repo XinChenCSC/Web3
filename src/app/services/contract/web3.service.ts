@@ -5,12 +5,13 @@ import Web3 from 'web3';
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { provider } from 'web3-core';
+import { pricefeed_abi } from './abis/pricefeed';
 
-
-
-@Injectable({
-  providedIn: 'root'
-})
+interface PriceFeedI {
+  description: string;
+  latestAnswer: number;
+  latestTimeStamp: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class Web3Service {
       walletconnect: {
         package: WalletConnectProvider, // required
         options: {
-          infuraId: 'env', // required change this with your own infura id
+          infuraId: '39f269efdc464dbf97ac75f0baebb5a7', // required change this with your own infura id
           description: 'Scan the qr code and sign in',
           qrcodeModalOptions: {
             mobileLinks: [
@@ -76,10 +77,20 @@ export class Web3Service {
     return this.accounts;
   }
 
-  async accountInfo(account: any[]){
-    const initialvalue = await this.web3js.eth.getBalance(account);
-    this.balance = this.web3js.utils.fromWei(initialvalue , 'ether');
-    return this.balance;
+  async getBalance(): Promise<string> {
+    if(this.accounts) {
+      return this.web3js.eth.getBalance(this.accounts[0]);
+    } return "";
+  }
+
+  async getPrice(contract_address: string): Promise<PriceFeedI> {
+    const contract = new this.web3js.eth.Contract(pricefeed_abi, contract_address);
+    return {
+      description : await contract.methods.description().call(),
+      latestAnswer : await contract.methods.latestAnswer().call(),
+      latestTimeStamp : await contract.methods.latestTimeStamp().call(),
+    };
+
   }
 
 }
