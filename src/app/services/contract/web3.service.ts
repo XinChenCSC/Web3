@@ -5,9 +5,9 @@ import Web3 from 'web3';
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { provider } from 'web3-core';
-import { pricefeed_abi } from './abis/pricefeed';
+import pricefeed from 'src/app/resources/abis/pricefeed';
 
-interface PriceFeedDataI {
+export interface PriceFeedData {
   description: string;
   latestAnswer: number;
   latestTimeStamp: number;
@@ -83,8 +83,8 @@ export class Web3Service {
     } return "";
   }
 
-  async getPriceData(contract_address: string): Promise<PriceFeedDataI> {
-    const contract = new this.web3js.eth.Contract(pricefeed_abi, contract_address);
+  async getPriceData(address: string): Promise<PriceFeedData> {
+    const contract = new this.web3js.eth.Contract(pricefeed, address);
     return {
       description : await contract.methods.description().call(),
       latestAnswer : await contract.methods.latestAnswer().call(),

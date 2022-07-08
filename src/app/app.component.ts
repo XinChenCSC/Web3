@@ -32,11 +32,4 @@ export class AppComponent {
     })
   }
 
-  GetPrice(){
-    this.web3.getPrice("0xb49f677943BC038e9857d61E7d053CaA2C1734C1").then(response => {
-      console.log(response);
-      this.price = response
-    })
-  }
-
 }

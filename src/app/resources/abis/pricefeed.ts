@@ -1,4 +1,4 @@
-export const pricefeed_abi = [
+export default [
   {
     "inputs": [
       { "internalType": "address", "name": "_aggregator", "type": "address" },
