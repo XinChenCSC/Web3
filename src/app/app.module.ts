@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
@@ -10,7 +11,6 @@ import { ContentComponent } from './components/content/content.component';
 import { FfxTableComponent } from './pages/ffx-table/ffx-table.component';
 import { FfxAssetComponent } from './pages/ffx-asset/ffx-asset.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
-import { RouterModule, Routes } from '@angular/router';
 
 const appRoutes: Routes = [
   { path: '', component: FfxTableComponent },
