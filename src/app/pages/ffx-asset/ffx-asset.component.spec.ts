@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PriceTableComponent } from './price-table.component';
+import { FfxAssetComponent } from './ffx-asset.component';
 
-describe('PriceTableComponent', () => {
-  let component: PriceTableComponent;
-  let fixture: ComponentFixture<PriceTableComponent>;
+describe('FfxAssetComponent', () => {
+  let component: FfxAssetComponent;
+  let fixture: ComponentFixture<FfxAssetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PriceTableComponent ]
+      declarations: [ FfxAssetComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PriceTableComponent);
+    fixture = TestBed.createComponent(FfxAssetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

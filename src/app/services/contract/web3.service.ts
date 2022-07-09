@@ -77,6 +77,11 @@ export class Web3Service {
     return this.accounts;
   }
 
+  async disconnectAccount(): Promise<void> {
+    this.web3Modal.clearCachedProvider();
+    return undefined;
+  }
+
   async getBalance(): Promise<string> {
     if(this.accounts) {
       return this.web3js.eth.getBalance(this.accounts[0]);

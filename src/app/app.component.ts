@@ -18,13 +18,6 @@ export class AppComponent {
   }
 
 
-  Connect() {
-    this.web3.connectAccount().then(response => {
-      console.log(response);
-      this.data = response
-    })
-  }
-
   GetBalance() {
     this.web3.getBalance().then(response => {
       console.log(response);
