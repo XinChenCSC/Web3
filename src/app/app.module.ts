@@ -12,6 +12,12 @@ import { FfxTableComponent } from './pages/ffx-table/ffx-table.component';
 import { FfxAssetComponent } from './pages/ffx-asset/ffx-asset.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MaterialExampleModule} from '../material.module';
+import {MatNativeDateModule} from '@angular/material/core';
+
+
+
 const appRoutes: Routes = [
   { path: '', component: FfxTableComponent },
   { path: ':id', component: FfxAssetComponent },
@@ -35,7 +41,10 @@ const appRoutes: Routes = [
     ),
     BrowserModule,
     BrowserAnimationsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    MatNativeDateModule,
+    MaterialExampleModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
