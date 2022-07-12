@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Web3Service } from 'src/app/services/contract/web3.service';
+import { Web3Service } from 'src/app/services/web3/web3.service';
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
 
   Connect() {
     this.web3.connectAccount().then(response => {
-      this.accounts = response
+      this.accounts = this.web3.accounts;
     })
   }
 

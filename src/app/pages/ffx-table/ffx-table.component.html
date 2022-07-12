@@ -1,8 +1,7 @@
-<table mat-table
-       [dataSource]="dataSource" multiTemplateDataRows
-       class="mat-elevation-z8">
 
-
+  <table mat-table
+  [dataSource]="priceData$" multiTemplateDataRows
+  class="mat-elevation-z8">
   <ng-container matColumnDef="symbol">
     <th mat-header-cell *matHeaderCellDef> Symbol</th>
     <td mat-cell *matCellDef="let price_data">
@@ -20,6 +19,11 @@
     <td mat-cell *matCellDef="let price_data"> {{price_data.price}}</td>
   </ng-container>
 
+  <ng-container matColumnDef="address">
+    <th mat-header-cell *matHeaderCellDef> Address</th>
+    <td mat-cell *matCellDef="let price_data"> {{price_data.address}}</td>
+  </ng-container>
+
   <ng-container matColumnDef="expand">
     <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
     <td mat-cell *matCellDef="let element">
@@ -29,6 +33,8 @@
       </button>
     </td>
   </ng-container>
+
+
 
   <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
   <ng-container matColumnDef="expandedDetail">
@@ -48,17 +54,18 @@
       </div>
     </td>
   </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
   <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
       class="example-element-row"
       [class.example-expanded-row]="expandedPriceData === element"
 
       (click)="expandedPriceData = expandedPriceData === element ? null : element">
-  </tr>
-  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-</table>
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
 
 
-<!-- Copyright 2022 Google LLC. All Rights Reserved.
+  <!-- Copyright 2022 Google LLC. All Rights Reserved.
     Use of this source code is governed by an MIT-style license that
     can be found in the LICENSE file at https://angular.io/license -->

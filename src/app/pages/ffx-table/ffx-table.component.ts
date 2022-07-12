@@ -5,9 +5,12 @@ import {
   animate,
   style,
 } from '@angular/animations';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { faStar as filledStar  } from '@fortawesome/free-solid-svg-icons';
 import { faStar as regularStar }  from '@fortawesome/free-regular-svg-icons' ;
+import { PriceData } from 'src/app/interfaces/interfaces';
+import { Observable } from 'rxjs';
+import { Web3Service } from 'src/app/services/web3/web3.service';
 
 @Component({
   selector: 'app-ffx-table',
@@ -24,39 +27,30 @@ import { faStar as regularStar }  from '@fortawesome/free-regular-svg-icons' ;
     ]),
   ],
 })
-export class FfxTableComponent {
-  dataSource = PRICE_DATA;
-  columnsToDisplay = ['symbol', 'price'];
+
+export class FfxTableComponent implements OnInit {
+  priceData$: PriceData[] = [];
+  columnsToDisplay = ['symbol', 'price', 'address'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
-  expandedPriceData: PeriodicElement | null | undefined;
+  expandedPriceData: PriceData | null | undefined;
   filledStar = filledStar;
   regularStar = regularStar;
-}
+  loggedIn = false;
 
-export interface PeriodicElement {
-  watched: boolean;
-  symbol: string;
-  price: number;
-  description: string;
-}
+  constructor(private web3: Web3Service) { }
 
-const PRICE_DATA: PeriodicElement[] = [
-  {
-    watched: true,
-    symbol: 'JPY/USD',
-    price: 0.0089,
-    description: `The yen (Japanese: 円, symbol: ¥; code: JPY; also abbreviated as JP¥) is the official currency of Japan. It is the third-most traded currency in the foreign exchange market, after the United States dollar (US$) and the euro.[2] It is also widely used as a third reserve currency after the US dollar and the euro.`,
-  },
-  {
-    watched: true,
-    symbol: 'EUR/USD',
-    price: 1.1021,
-    description: `The euro (symbol: €; code: EUR) is the official currency of 19 out of the 27 member states of the European Union. This group of states is known as the eurozone or, officially, the euro area, and includes about 349 million citizens as of 2019.[12][13] The euro is divided into 100 cents.`,
-  },
-  {
-    watched: false,
-    symbol: 'GBP/USD',
-    price: 1.3282,
-    description: `The pound sterling (symbol: £; code: GBP) is the currency of the United Kingdom.`,
-  },
-];
+  ngOnInit(): void {
+    this.web3.priceData$.subscribe({
+      next: (priceData: PriceData[]) => {
+        this.priceData$ = priceData;
+        this.update(priceData);
+      }
+    }
+    );
+  }
+
+  update(data: PriceData[]){
+    console.log(data);
+  }
+
+}

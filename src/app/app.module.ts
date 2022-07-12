@@ -13,7 +13,7 @@ import { FfxAssetComponent } from './pages/ffx-asset/ffx-asset.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MaterialExampleModule} from '../material.module';
+import { SharedModule } from './shared/shared.module';
 import {MatNativeDateModule} from '@angular/material/core';
 
 
@@ -43,7 +43,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     FontAwesomeModule,
     MatNativeDateModule,
-    MaterialExampleModule,
+    SharedModule,
     ReactiveFormsModule,
   ],
   providers: [],
