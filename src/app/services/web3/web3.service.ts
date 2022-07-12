@@ -81,8 +81,8 @@ export class Web3Service {
         watched: false,
         assetType: contractList[key].assetType,
       };
-      this.priceData$.next(Object.values(this._priceData$));
     }
+    this.priceData$.next(Object.values(this._priceData$));
   }
 
   async connectAccount() {
@@ -98,7 +98,6 @@ export class Web3Service {
 
     for( const key of Object.keys(contractList)) {
 
-      console.log(contractList[key].address);
       const contractInstance = new this.web3js.eth.Contract(pricefeedAbi, contractList[key].address);
 
       contractInstance.methods.description().call({from: this.accounts[0]}).then((res: string) => {

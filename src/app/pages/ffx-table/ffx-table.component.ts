@@ -43,14 +43,9 @@ export class FfxTableComponent implements OnInit {
     this.web3.priceData$.subscribe({
       next: (priceData: PriceData[]) => {
         this.priceData$ = priceData;
-        this.update(priceData);
       }
     }
     );
-  }
-
-  update(data: PriceData[]){
-    console.log(data);
   }
 
 }
