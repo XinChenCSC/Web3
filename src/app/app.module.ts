@@ -15,6 +15,8 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
 import {MatNativeDateModule} from '@angular/material/core';
+import { PleaseLogInComponent } from './components/please-log-in/please-log-in.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 
@@ -33,6 +35,8 @@ const appRoutes: Routes = [
     FfxTableComponent,
     FfxAssetComponent,
     PageNotFoundComponent,
+    PleaseLogInComponent,
+    FooterComponent,
   ],
   imports: [
     RouterModule.forRoot(

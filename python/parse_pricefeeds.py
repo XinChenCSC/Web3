@@ -851,7 +851,8 @@ if __name__ == '__main__':
 
     print(name, asset, assert_type, address)
 
-    data[name] = {
+    data[address] = {
+      'name': name,
       'asset': asset,
       'assert_type': assert_type,
       'address': address

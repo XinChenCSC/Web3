@@ -21,11 +21,9 @@ export class Web3Service {
   accounts: any;
   balance: any;
 
-  private accountStatusSource = new Subject<any>();
-  contracts: ContractInterface[];
+  private accountStatusSource = new Subject<string[]>();
   accountStatus$ = this.accountStatusSource.asObservable();
   _priceData$: {[key: string]:PriceData} = {};
-
   priceData$ = new Subject<PriceData[]>();
 
   constructor(@Inject(WEB3) private web3: Web3) {
