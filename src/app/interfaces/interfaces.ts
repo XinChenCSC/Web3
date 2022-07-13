@@ -8,3 +8,12 @@ export interface PriceData {
   price: number,
   watched : boolean,
 }
+
+
+export interface TableRow {
+  watched : boolean,
+  symbol: string | undefined,
+  price: number,
+  assetType: 'Crypto' | 'Forex' | 'Equities' | "Commodities",
+  description: string,
+}

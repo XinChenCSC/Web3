@@ -8,7 +8,7 @@ import { faWallet } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  accounts: string[] | undefined;
+  accountList$: string[] | undefined;
   faWallet = faWallet;
 
   constructor(
@@ -20,13 +20,16 @@ export class LoginComponent implements OnInit {
 
   Connect() {
     this.web3.connectAccount().then(response => {
-      this.accounts = this.web3.accounts;
+      this.web3.metamaskAccounts$.subscribe({
+        next: (accountList: string[]) => {
+          this.accountList$ = accountList;
+        }})
     })
   }
 
   Disconnect() {
     this.web3.disconnectAccount();
-    this.accounts = undefined;
+    this.accountList$ = undefined;
   }
 
 }

@@ -6,12 +6,10 @@ import {
   style,
 } from '@angular/animations';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { faStar as filledStar  } from '@fortawesome/free-solid-svg-icons';
-import { faStar as regularStar }  from '@fortawesome/free-regular-svg-icons' ;
 import { PriceData } from 'src/app/interfaces/interfaces';
 import { Observable } from 'rxjs';
 import { Web3Service } from 'src/app/services/web3/web3.service';
-
+import { contractList } from 'src/app/resources/contracts'
 @Component({
   selector: 'app-ffx-table',
   templateUrl: './ffx-table.component.html',
@@ -29,23 +27,19 @@ import { Web3Service } from 'src/app/services/web3/web3.service';
 })
 
 export class FfxTableComponent implements OnInit {
-  priceData$: PriceData[] = [];
+  addresses$:string[] = [ ];
   columnsToDisplay = ['symbol', 'price', 'address'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
   expandedPriceData: PriceData | null | undefined;
-  filledStar = filledStar;
-  regularStar = regularStar;
   loggedIn = false;
 
-  constructor(private web3: Web3Service) { }
+  constructor(private web3: Web3Service) {
+  }
 
   ngOnInit(): void {
-    this.web3.priceData$.subscribe({
-      next: (priceData: PriceData[]) => {
-        this.priceData$ = priceData;
-      }
-    }
-    );
+    this.addresses$ = Object.keys(contractList);
+    console.log("Table created");
+    console.log(this.addresses$);
   }
 
 }

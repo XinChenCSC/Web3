@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FfxAssetComponent } from './ffx-asset.component';
+import { AuthenticateComponent } from './authenticate.component';
 
-describe('FfxAssetComponent', () => {
-  let component: FfxAssetComponent;
-  let fixture: ComponentFixture<FfxAssetComponent>;
+describe('AuthenticateComponent', () => {
+  let component: AuthenticateComponent;
+  let fixture: ComponentFixture<AuthenticateComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FfxAssetComponent ]
+      declarations: [ AuthenticateComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FfxAssetComponent);
+    fixture = TestBed.createComponent(AuthenticateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

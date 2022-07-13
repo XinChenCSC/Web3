@@ -14,13 +14,13 @@ export class AppComponent {
   data: string[] | undefined;
   balance: string | undefined;
   price: any;
-  accountStatus$: string[] = [];
+  accountList$: string[] = [];
 
 
   constructor(private web3: Web3Service) {
-    this.web3.accountStatus$.subscribe({
-      next: (accountStatus: string[]) => {
-        this.accountStatus$ = accountStatus;
+    this.web3.metamaskAccounts$.subscribe({
+      next: (accountList: string[]) => {
+        this.accountList$ = accountList;
       }})
   }
 }

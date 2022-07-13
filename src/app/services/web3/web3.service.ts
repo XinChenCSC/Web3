@@ -14,17 +14,22 @@ import { ADDRCONFIG } from 'dns';
   providedIn: 'root'
 })
 export class Web3Service {
-  public accountsObservable = new Subject<string[]>();
-  web3Modal;
+  private metamaskAccounts: any;
+  private web3Modal;
   web3js:  any;
   provider: any;
-  accounts: any;
-  balance: any;
+  private balance: any;
+  private addresses: string[] = [];
 
-  private accountStatusSource = new Subject<string[]>();
-  accountStatus$ = this.accountStatusSource.asObservable();
-  _priceData$: {[key: string]:PriceData} = {};
-  priceData$ = new Subject<PriceData[]>();
+
+  public addresses$ = new Subject<string[]>();
+  public metamaskAccounts$ = new Subject<string[]>();
+  public price$:{[key:string]:Subject<number>} = {}
+  public symbol$:{[key:string]:Subject<string>} = {}
+  public watched$:{[key:string]:Subject<boolean>} = {}
+
+
+
 
   constructor(@Inject(WEB3) private web3: Web3) {
     const providerOptions = {
@@ -68,68 +73,59 @@ export class Web3Service {
       }
     });
 
-    for( const key of Object.keys(contractList)) {
-      this._priceData$[key] = {
-        address: contractList[key].address,
-        symbol: key,
-        description: key,
-        latestAnswer: 0,
-        decimals: 0,
-        price: 0,
-        watched: false,
-        assetType: contractList[key].assetType,
-      };
+    for( const key of Object.keys(contractList)){
+      this.addresses.push(key);
+      this.watched$[key] = new Subject<boolean>();
+      this.symbol$[key] = new Subject<string>();
+      this.price$[key] = new Subject<number>();
     }
-    this.priceData$.next(Object.values(this._priceData$));
+    this.addresses$.next(this.addresses);
   }
 
   async connectAccount() {
     this.web3Modal.clearCachedProvider();
     this.provider = await this.web3Modal.connect();
     this.web3js = new Web3(this.provider);
-    this.accounts = await this.web3js.eth.getAccounts();
-    this.accountStatusSource.next(this.accounts);
-    console.log(this.accounts);
-
-
-
+    this.metamaskAccounts = await this.web3js.eth.getAccounts();
+    this.metamaskAccounts$.next(this.metamaskAccounts);
+    console.log(this.metamaskAccounts);
 
     for( const key of Object.keys(contractList)) {
-
       const contractInstance = new this.web3js.eth.Contract(pricefeedAbi, contractList[key].address);
 
-      contractInstance.methods.description().call({from: this.accounts[0]}).then((res: string) => {
-        this._priceData$[key].symbol = res;
-        this.priceData$.next(Object.values(this._priceData$));
-      });
+      contractInstance.methods.description()
+        .call({from: this.metamaskAccounts[0]})
+        .then((res: string) => this.symbol$[key].next(res));
 
-      contractInstance.methods.latestAnswer().call({from: this.accounts[0]})
-        .then((latestAnswer: number) => {contractInstance.methods.decimals().call({from: this.accounts[0]})
+      contractInstance.methods.latestAnswer().call({from: this.metamaskAccounts[0]})
+        .then((latestAnswer: number) => { contractInstance.methods.decimals()
+          .call({from: this.metamaskAccounts[0]})
           .then((decimals: number) => {
-            this._priceData$[key].latestAnswer = latestAnswer;
-            this._priceData$[key].decimals = decimals;
-            this._priceData$[key].price = latestAnswer / Math.pow(10, decimals);
-            this.priceData$.next(Object.values(this._priceData$));
+            this.price$[key].next(latestAnswer / Math.pow(10, decimals));
           });
         });
-
-  }
+    }
 }
+
 
   async disconnectAccount(): Promise<void> {
     this.web3Modal.clearCachedProvider();
     return undefined;
   }
 
+
   async getBalance(): Promise<string> {
-    if(this.accounts) {
-      return this.web3js.eth.getBalance(this.accounts[0]);
+    if(this.metamaskAccounts) {
+      return this.web3js.eth.getBalance(this.metamaskAccounts[0]);
     } return "";
   }
-}
 
-interface ContractInterface {
-  address: string;
-  abi: any[];
+  async signMessage(message: string) {
+    console.log(this.metamaskAccounts);
+    this.web3.eth.personal.sign(message, this.metamaskAccounts[0], "null")
+    .then((res: string) => {
+      console.log(res);
+    });
+  }
 }
 

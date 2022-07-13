@@ -1,11 +1,8 @@
-<div class="flex">
-
-  <div *ngIf="accounts; then logout ; else login"></div>
-  <ng-template #logout>
+<ng-template #logout>
     <button class="btn btn-primary" (click)="Disconnect()">
       <fa-icon [icon]="faWallet"></fa-icon>
       <span>{{
-        accounts ? " " + accounts[0].substring(0,6) + '...' + accounts[0].substring(accounts[0].length - 4, accounts[0].length) : "Logout"
+        accountList$ ? " " + accountList$[0].substring(0,6) + '...' + accountList$[0].substring(accountList$[0].length - 4, accountList$[0].length) : "Logout"
       }}</span>
     </button>
   </ng-template>
@@ -17,5 +14,9 @@
   </ng-template>
 
 
-
+<div>
+  <div *ngIf="accountList$; then logout ; else login"></div>
+  <div>
+    <app-authenticate *ngIf="accountList$"></app-authenticate>
+  </div>
 </div>

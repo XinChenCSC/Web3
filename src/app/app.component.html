@@ -1,7 +1,8 @@
-<div id="container" class="justify-center items-center w-screen h-screen">
-  <app-navbar></app-navbar>
-  <app-please-log-in *ngIf="accountStatus$.length <= 0"></app-please-log-in>
-  <router-outlet *ngIf="accountStatus$.length > 0"></router-outlet>
-
-
+<app-navbar></app-navbar>
+<div id="container">
+    <app-please-log-in *ngIf="accountList$.length <= 0"></app-please-log-in>
+    <router-outlet *ngIf="accountList$.length > 0"></router-outlet>
 </div>
+<app-footer></app-footer>
+
+
