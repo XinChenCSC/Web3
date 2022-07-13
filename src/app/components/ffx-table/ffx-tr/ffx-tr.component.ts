@@ -13,8 +13,7 @@ import { Console } from 'console';
 `
 })
 export class FfxTrComponent implements OnInit {
-
-  @Input("address") address: string;
+  @Input("address") address: string | undefined;
   Watched:boolean = false ;
   Symbol:string = "";
   Price:number = 0;
@@ -27,21 +26,23 @@ export class FfxTrComponent implements OnInit {
 
   ngOnInit() {
     console.log("Row for " + this.address + " created");
-    this.web3.watched$[this.address].subscribe({
-      next: (w) => {
-        this.Watched = w;
-      }});
+      if(this.address){
+      this.web3.watched$[this.address].subscribe({
+        next: (w:any) => {
+          this.Watched = w;
+        }});
 
-    this.web3.symbol$[this.address].subscribe({
-      next: (s) => {
-        this.Symbol = s;
-      }});
+      this.web3.symbol$[this.address].subscribe({
+        next: (s:any) => {
+          this.Symbol = s;
+        }});
 
-    this.web3.price$[this.address].subscribe({
-      next: (p) => {
-        this.Price = p;
-      }});
-  }
+      this.web3.price$[this.address].subscribe({
+        next: (p:any) => {
+          this.Price = p;
+        }});
+    }
+}
 
 
 }

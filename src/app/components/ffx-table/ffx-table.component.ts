@@ -6,7 +6,6 @@ import {
   style,
 } from '@angular/animations';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { PriceData } from 'src/app/interfaces/interfaces';
 import { Observable } from 'rxjs';
 import { Web3Service } from 'src/app/services/web3/web3.service';
 import { contractList } from 'src/app/resources/contracts'
@@ -30,7 +29,6 @@ export class FfxTableComponent implements OnInit {
   addresses$:string[] = [ ];
   columnsToDisplay = ['symbol', 'price', 'address'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
-  expandedPriceData: PriceData | null | undefined;
   loggedIn = false;
 
   constructor(private web3: Web3Service) {

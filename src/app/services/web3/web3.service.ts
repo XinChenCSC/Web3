@@ -7,7 +7,6 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { provider } from 'web3-core';
 import { contractList } from 'src/app/resources/contracts';
 import pricefeedAbi from 'src/app/resources/abis/pricefeed';
-import { PriceData } from 'src/app/interfaces/interfaces';
 import { ADDRCONFIG } from 'dns';
 
 @Injectable({
