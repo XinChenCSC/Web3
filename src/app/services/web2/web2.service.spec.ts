@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PricedataService } from './pricedata.service';
+import { Web2Service } from './web2.service';
 
-describe('PricedataService', () => {
-  let service: PricedataService;
+describe('Web2Service', () => {
+  let service: Web2Service;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PricedataService);
+    service = TestBed.inject(Web2Service);
   });
 
   it('should be created', () => {

@@ -14,6 +14,9 @@ import { PriceData } from 'src/app/components/ffx-material-table/ffx-material-ta
   providedIn: 'root',
 })
 export class Web3Service {
+  getAccount(): any {
+    throw new Error('Method not implemented.');
+  }
   private metamaskAccounts: any;
   private web3Modal;
   web3js: any;
@@ -112,6 +115,7 @@ export class Web3Service {
         this._pricedata = [
           ...this._pricedata,
           {
+            asset: contractList[key].asset,
             symbol: symbol,
             price: latestAnswer / Math.pow(10, decimals),
             address: key,
@@ -136,12 +140,13 @@ export class Web3Service {
     return '';
   }
 
-  async signMessage(message: string) {
+  async signMessage(message: string): Promise<string> {
+    let signature: string;
     console.log(this.metamaskAccounts);
-    this.web3.eth.personal
-      .sign(message, this.metamaskAccounts[0], 'null')
-      .then((res: string) => {
-        console.log(res);
-      });
+    return this.web3.eth.personal.sign(message, this.metamaskAccounts[0], 'null')
+  }
+
+  getAccounts(): string[] {
+    return this.metamaskAccounts;
   }
 }

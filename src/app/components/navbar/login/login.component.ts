@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Web3Service } from 'src/app/services/web3/web3.service';
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
+import { Web2Service } from 'src/app/services/web2/web2.service';
 
 @Component({
   selector: 'app-login',
@@ -11,25 +12,23 @@ export class LoginComponent implements OnInit {
   accountList$: string[] | undefined;
   faWallet = faWallet;
 
-  constructor(
-    private web3: Web3Service) {
-  }
+  constructor( private web3: Web3Service, private web2: Web2Service ){}
 
   ngOnInit(): void {
   }
 
   Connect() {
-    this.web3.connectAccount().then(response => {
-      this.web3.metamaskAccounts$.subscribe({
-        next: (accountList: string[]) => {
-          this.accountList$ = accountList;
-        }})
-    })
+    this.web3.connectAccount();
+    this.web3.metamaskAccounts$.subscribe((data:string[]) => this.accountList$ = data)
   }
 
   Disconnect() {
     this.web3.disconnectAccount();
     this.accountList$ = undefined;
+  }
+
+  Authenticate(){
+    this.web2.connect();
   }
 
 }

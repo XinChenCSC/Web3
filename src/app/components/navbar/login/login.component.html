@@ -17,6 +17,8 @@
 <div>
   <div *ngIf="accountList$; then logout ; else login"></div>
   <div>
-    <app-authenticate *ngIf="accountList$"></app-authenticate>
+    <button #authenticate class="btn btn-primary" *ngIf="accountList$" (click)="Authenticate()">
+      Authenticate
+    </button>
   </div>
 </div>

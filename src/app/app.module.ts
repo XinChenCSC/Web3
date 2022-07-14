@@ -10,16 +10,17 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FfxTableComponent } from './components/ffx-table/ffx-table.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
-import {MatNativeDateModule} from '@angular/material/core';
+import { MatNativeDateModule} from '@angular/material/core';
 import { PleaseLogInComponent } from './components/please-log-in/please-log-in.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { AuthenticateComponent } from './components/navbar/login/authenticate/authenticate.component';
 import { FfxTrComponent } from './components/ffx-table/ffx-tr/ffx-tr.component';
 import { FfxMaterialTableComponent } from './components/ffx-material-table/ffx-material-table.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableFilterModule } from 'mat-table-filter';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -38,7 +39,6 @@ const appRoutes: Routes = [
     PageNotFoundComponent,
     PleaseLogInComponent,
     FooterComponent,
-    AuthenticateComponent,
     FfxTrComponent,
     FfxMaterialTableComponent,
   ],
@@ -55,6 +55,9 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     MatSortModule,
     MatPaginatorModule,
+    MatTableFilterModule,
+    FormsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
