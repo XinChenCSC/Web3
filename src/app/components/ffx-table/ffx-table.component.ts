@@ -26,18 +26,21 @@ import { contractList } from 'src/app/resources/contracts'
 })
 
 export class FfxTableComponent implements OnInit {
-  addresses$:string[] = [ ];
+  contractAddresses$:string[] = [];
   columnsToDisplay = ['symbol', 'price', 'address'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
   loggedIn = false;
 
   constructor(private web3: Web3Service) {
+    this.web3.contractAddresses$.subscribe({
+      next: (contractAddresses: string[]) => {
+        this.contractAddresses$ = contractAddresses;
+      }});
+
   }
 
   ngOnInit(): void {
-    this.addresses$ = Object.keys(contractList);
     console.log("Table created");
-    console.log(this.addresses$);
   }
 
 }

@@ -17,11 +17,14 @@ import { PleaseLogInComponent } from './components/please-log-in/please-log-in.c
 import { FooterComponent } from './components/footer/footer.component';
 import { AuthenticateComponent } from './components/navbar/login/authenticate/authenticate.component';
 import { FfxTrComponent } from './components/ffx-table/ffx-tr/ffx-tr.component';
+import { FfxMaterialTableComponent } from './components/ffx-material-table/ffx-material-table.component';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 
 const appRoutes: Routes = [
-  { path: '', component: FfxTableComponent },
+  { path: '', component: FfxMaterialTableComponent },
   { path: ':id', component: PageNotFoundComponent },
   { path: '**', component: PageNotFoundComponent },
 ];
@@ -37,6 +40,7 @@ const appRoutes: Routes = [
     FooterComponent,
     AuthenticateComponent,
     FfxTrComponent,
+    FfxMaterialTableComponent,
   ],
   imports: [
     RouterModule.forRoot(
@@ -49,6 +53,8 @@ const appRoutes: Routes = [
     MatNativeDateModule,
     SharedModule,
     ReactiveFormsModule,
+    MatSortModule,
+    MatPaginatorModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

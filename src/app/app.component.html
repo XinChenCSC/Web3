@@ -1,8 +1,5 @@
 <app-navbar></app-navbar>
-<div id="container">
-    <app-please-log-in *ngIf="accountList$.length <= 0"></app-please-log-in>
-    <router-outlet *ngIf="accountList$.length > 0"></router-outlet>
-</div>
+<router-outlet></router-outlet>
 <app-footer></app-footer>
 
 
