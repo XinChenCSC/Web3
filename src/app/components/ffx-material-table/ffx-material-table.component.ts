@@ -7,6 +7,7 @@ import { BehaviorSubject, Observable, Subject, Subscription, of, observable } fr
 import { Web3Service } from 'src/app/services/web3/web3.service';
 
 export interface PriceData {
+  asset: string;
   watched: boolean | undefined;
   symbol: string | undefined;
   price: number | undefined;
@@ -24,7 +25,7 @@ export class FfxMaterialTableComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
-  displayedColumns: string[] = ['watched', 'symbol', 'price', 'type', 'address',];
+  displayedColumns: string[] = ['asset', 'watched', 'symbol', 'price', 'type', 'address',];
   dataSource: MatTableDataSource<PriceData>;
 
 

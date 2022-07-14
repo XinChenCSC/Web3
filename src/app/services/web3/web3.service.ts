@@ -83,6 +83,7 @@ export class Web3Service {
   }
 
   async connectAccount() {
+    this._pricedata = [];
     this.web3Modal.clearCachedProvider();
     this.provider = await this.web3Modal.connect();
     this.web3js = new Web3(this.provider);
@@ -112,6 +113,7 @@ export class Web3Service {
         this._pricedata = [
           ...this._pricedata,
           {
+            asset: contractList[key].asset,
             symbol: symbol,
             price: latestAnswer / Math.pow(10, decimals),
             address: key,
