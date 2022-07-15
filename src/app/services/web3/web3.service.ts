@@ -9,6 +9,13 @@ import { contractList } from 'src/app/resources/contracts';
 import pricefeedAbi from 'src/app/resources/abis/pricefeed';
 import { ADDRCONFIG } from 'dns';
 import { PriceData } from 'src/app/components/ffx-material-table/ffx-material-table.component';
+import { Web2Service } from '../web2/web2.service';
+import { HttpClient } from '@angular/common/http';
+
+interface response{
+  publicAddress: string;
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -29,12 +36,14 @@ export class Web3Service {
 
   public price$: { [key: string]: Subject<number> } = {};
   public symbol$: { [key: string]: Subject<string> } = {};
-  public watched$: { [key: string]: Subject<boolean> } = {};
+  private watched: string[] = [];
 
   private _pricedata: PriceData[] = [];
   public priceData$: Subject<PriceData[]> = new Subject<PriceData[]>();
+  private token: string | undefined;
+  BACKEND_URL = 'http://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com';
 
-  constructor(@Inject(WEB3) private web3: Web3) {
+  constructor(@Inject(WEB3) private web3: Web3, private http: HttpClient) {
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider, // required
@@ -78,11 +87,7 @@ export class Web3Service {
 
     for (const key of Object.keys(contractList)) {
       this.addresses.push(key);
-      this.watched$[key] = new Subject<boolean>();
-      this.symbol$[key] = new Subject<string>();
-      this.price$[key] = new Subject<number>();
     }
-    this.contractAddresses$.next(this.addresses);
   }
 
   async connectAccount() {
@@ -92,6 +97,10 @@ export class Web3Service {
     this.metamaskAccounts = await this.web3js.eth.getAccounts();
     this.metamaskAccounts$.next(this.metamaskAccounts);
     console.log(this.metamaskAccounts);
+
+    await this.login();
+
+    this.watched = await this.getWatchList();
 
     for (const key of Object.keys(contractList)) {
       const contractInstance = new this.web3js.eth.Contract(
@@ -119,11 +128,11 @@ export class Web3Service {
             symbol: symbol,
             price: latestAnswer / Math.pow(10, decimals),
             address: key,
-            watched: false,
+            watched: this.watched.includes(key),
             type: contractList[key].assetType,
           },
         ];
-          this.priceData$.next(this._pricedata);
+        this.priceData$.next(this._pricedata);
       })
     }
   }
@@ -149,4 +158,53 @@ export class Web3Service {
   getAccounts(): string[] {
     return this.metamaskAccounts;
   }
+
+  public async login() {
+    let accounts:string[] = this.getAccounts();
+    let nonce: string;
+    let signature: string;
+
+    const request_body = {
+      publicAddress: accounts[0],
+      message: 'null'
+    }
+
+    console.log(`Request body: ${JSON.stringify(request_body)}`)
+
+    // fetch the nonce from the backend
+    this.http.post<response>( this.BACKEND_URL + '/login/get',
+      { publicAddress: accounts[0], message: 'null' },
+      { headers: { 'Content-Type': 'application/json' }})
+      .subscribe(async (data: any) => {
+        nonce = data.message;
+        console.log(`nonce = ${nonce}`);
+        signature = await this.signMessage(nonce);
+        console.log(`signature ${signature}`);
+
+        // sign and send the request to the backend
+        this.http.post<response>( this.BACKEND_URL + '/login/verify',
+        { publicAddress: accounts[0], message: signature },
+        { headers: { 'Content-Type': 'application/json' }})
+          .subscribe(async (data: any) => {
+            console.log(`data = ${data.publicAddress}`);
+            console.log(`data.message = ${data.message}`);
+            this.token = data.message;
+          })
+      })
+    }
+
+    public async getWatchList(): Promise<string[]> {
+    // fetch the nonce from the backend
+    return new Promise<string[]>(async (resolve, reject) => {
+      this.http.get<response>( this.BACKEND_URL + '/users/watchlist',
+        {'headers':{
+          'jwt-token': this.token,
+        }}).subscribe(async (data: any) => {
+          console.log(`data = ${data}`);
+          console.log(`data = ${data.message}`);
+          resolve(data.message);
+        })
+    })
+  }
+
 }

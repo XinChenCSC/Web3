@@ -28,7 +28,10 @@ export class LoginComponent implements OnInit {
   }
 
   Authenticate(){
-    this.web2.connect();
+    this.web3.login();
   }
 
+  GetWatchlist(){
+    this.web3.getWatchList();
+  }
 }

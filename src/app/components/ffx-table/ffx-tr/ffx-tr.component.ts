@@ -27,10 +27,10 @@ export class FfxTrComponent implements OnInit {
   ngOnInit() {
     console.log("Row for " + this.address + " created");
       if(this.address){
-      this.web3.watched$[this.address].subscribe({
-        next: (w:any) => {
-          this.Watched = w;
-        }});
+      // this.web3.watched$[this.address].subscribe({
+      //   next: (w:any) => {
+      //     this.Watched = w;
+      //   }});
 
       this.web3.symbol$[this.address].subscribe({
         next: (s:any) => {
