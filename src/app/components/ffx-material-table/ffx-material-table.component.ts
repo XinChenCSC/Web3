@@ -17,7 +17,6 @@ import { faStar as filledStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 
 export interface PriceData {
-  asset: string;
   watched: boolean | undefined;
   asset: string | undefined;
   symbol: string | undefined;
