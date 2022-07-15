@@ -11,20 +11,14 @@ export class LoginComponent implements OnInit {
   accountList$: string[] | undefined;
   faWallet = faWallet;
 
-  constructor(
-    private web3: Web3Service) {
-  }
+  constructor( private web3: Web3Service ){}
 
   ngOnInit(): void {
   }
 
   Connect() {
-    this.web3.connectAccount().then(response => {
-      this.web3.metamaskAccounts$.subscribe({
-        next: (accountList: string[]) => {
-          this.accountList$ = accountList;
-        }})
-    })
+    this.web3.connectAccount();
+    this.web3.metamaskAccounts$.subscribe((data:string[]) => this.accountList$ = data)
   }
 
   Disconnect() {
@@ -32,4 +26,11 @@ export class LoginComponent implements OnInit {
     this.accountList$ = undefined;
   }
 
+  Authenticate(){
+    return
+  }
+
+  GetWatchlist(){
+    return
+  }
 }

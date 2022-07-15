@@ -9,11 +9,21 @@ import { contractList } from 'src/app/resources/contracts';
 import pricefeedAbi from 'src/app/resources/abis/pricefeed';
 import { ADDRCONFIG } from 'dns';
 import { PriceData } from 'src/app/components/ffx-material-table/ffx-material-table.component';
+import { HttpClient } from '@angular/common/http';
+import { preProcessFile } from 'typescript';
+
+interface response {
+  publicAddress: string;
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class Web3Service {
+  getAccount(): any {
+    throw new Error('Method not implemented.');
+  }
   private metamaskAccounts: any;
   private web3Modal;
   web3js: any;
@@ -26,12 +36,18 @@ export class Web3Service {
 
   public price$: { [key: string]: Subject<number> } = {};
   public symbol$: { [key: string]: Subject<string> } = {};
-  public watched$: { [key: string]: Subject<boolean> } = {};
+  private watched: string[] = [];
 
   private _pricedata: PriceData[] = [];
   public priceData$: Subject<PriceData[]> = new Subject<PriceData[]>();
+  private token: string | undefined;
+  BACKEND_URL =
+    'http://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com';
 
-  constructor(@Inject(WEB3) private web3: Web3) {
+  constructor(@Inject(WEB3) private web3: Web3, private http: HttpClient) {
+    this.watched = [] as string[];
+    this._pricedata = [] as PriceData[];
+
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider, // required
@@ -72,25 +88,9 @@ export class Web3Service {
         hover: 'rgb(16, 26, 32)',
       },
     });
-
-    for (const key of Object.keys(contractList)) {
-      this.addresses.push(key);
-      this.watched$[key] = new Subject<boolean>();
-      this.symbol$[key] = new Subject<string>();
-      this.price$[key] = new Subject<number>();
-    }
-    this.contractAddresses$.next(this.addresses);
   }
 
-  async connectAccount() {
-    this._pricedata = [];
-    this.web3Modal.clearCachedProvider();
-    this.provider = await this.web3Modal.connect();
-    this.web3js = new Web3(this.provider);
-    this.metamaskAccounts = await this.web3js.eth.getAccounts();
-    this.metamaskAccounts$.next(this.metamaskAccounts);
-    console.log(this.metamaskAccounts);
-
+  async loadData() {
     for (const key of Object.keys(contractList)) {
       const contractInstance = new this.web3js.eth.Contract(
         pricefeedAbi,
@@ -99,31 +99,71 @@ export class Web3Service {
       let symbol: string;
       let decimals: number;
       let latestAnswer: number;
-
-      contractInstance.methods.description()
-        .call({ from: this.metamaskAccounts[0]})
-        .then((res: string) => (symbol = res))
-      .then(() => contractInstance.methods.latestAnswer()
+      contractInstance.methods
+        .description()
         .call({ from: this.metamaskAccounts[0] })
-        .then((res:number) => latestAnswer = res))
-      .then(() => contractInstance.methods.decimals()
-        .call({ from: this.metamaskAccounts[0]})
-        .then((res: number) => decimals = res))
-      .then(() => {
-        this._pricedata = [
-          ...this._pricedata,
-          {
-            asset: contractList[key].asset,
-            symbol: symbol,
-            price: latestAnswer / Math.pow(10, decimals),
-            address: key,
-            watched: false,
-            type: contractList[key].assetType,
-          },
-        ];
+        .then((res: string) => (symbol = res))
+        .then(() =>
+          contractInstance.methods
+            .latestAnswer()
+            .call({ from: this.metamaskAccounts[0] })
+            .then((res: number) => (latestAnswer = res))
+        )
+        .then(() =>
+          contractInstance.methods
+            .decimals()
+            .call({ from: this.metamaskAccounts[0] })
+            .then((res: number) => (decimals = res))
+        )
+        .then(() => {
+          this._pricedata = [
+            ...this._pricedata,
+            {
+              asset: contractList[key].asset,
+              symbol: symbol,
+              price: latestAnswer / Math.pow(10, decimals),
+              address: key,
+              watched: false,
+              type: contractList[key].assetType,
+            },
+          ];
           this.priceData$.next(this._pricedata);
-      })
+        });
     }
+  }
+
+  async connectAccount() {
+    this.web3Modal.clearCachedProvider();
+    this.provider = await this.web3Modal.connect();
+    this.web3js = new Web3(this.provider);
+    this.metamaskAccounts = await this.web3js.eth.getAccounts();
+    this.metamaskAccounts$.next(this.metamaskAccounts);
+
+    await this.loadData();
+    this.getToken().then((res: string) => {
+      this.token = res;
+      console.log('Getting watch list');
+      this.http
+        .get<response>(this.BACKEND_URL + '/users/watchlist', {
+          headers: {
+            'jwt-token': this.token,
+          },
+        })
+        .subscribe(async (data: any) => {
+          console.log(`watched = ${data[0].address}`);
+          this.watched = data.map((x: any) => x.address);
+          console.log(this.watched);
+
+          this._pricedata = this._pricedata.map((entity: PriceData) => {
+            return {
+              ...entity,
+              watched: this.watched.includes(entity.address || ''),
+            };
+          });
+          console.log(`watchlist = ${this.watched}`);
+          this.priceData$.next(this._pricedata);
+        });
+    });
   }
 
   async disconnectAccount(): Promise<void> {
@@ -138,12 +178,86 @@ export class Web3Service {
     return '';
   }
 
-  async signMessage(message: string) {
-    console.log(this.metamaskAccounts);
-    this.web3.eth.personal
-      .sign(message, this.metamaskAccounts[0], 'null')
-      .then((res: string) => {
-        console.log(res);
+  async signMessage(message: string): Promise<string> {
+    return this.web3.eth.personal.sign(
+      message,
+      this.metamaskAccounts[0],
+      'null'
+    );
+  }
+
+  getAccounts(): string[] {
+    return this.metamaskAccounts;
+  }
+
+  public async getToken(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      let accounts: string[] = this.getAccounts();
+      let nonce: string;
+      let signature: string;
+
+      const request_body = {
+        publicAddress: accounts[0],
+        message: 'null',
+      };
+
+      console.log(`Request body: ${JSON.stringify(request_body)}`);
+
+      // fetch the nonce from the backend
+      this.http
+        .post<response>(
+          this.BACKEND_URL + '/login/get',
+          { publicAddress: accounts[0], message: 'null' },
+          { headers: { 'Content-Type': 'application/json' } }
+        )
+        .subscribe(async (data: any) => {
+          nonce = data.message;
+          console.log(`nonce = ${nonce}`);
+          signature = await this.signMessage(nonce);
+          console.log(`signature ${signature}`);
+
+          // sign and send the request to the backend
+          this.http
+            .post<response>(
+              this.BACKEND_URL + '/login/verify',
+              { publicAddress: accounts[0], message: signature },
+              { headers: { 'Content-Type': 'application/json' } }
+            )
+            .subscribe(async (data: any) => {
+              console.log(`address = ${data.publicAddress}`);
+              console.log(`token = ${data.message}`);
+              resolve(data.message);
+            });
+        });
+    });
+  }
+
+  public async toggleWatched(address: string): Promise<void> {
+    this.watched = this.watched.includes(address)
+      ? this.watched.filter((x) => x !== address)
+      : [...this.watched, address];
+
+      this._pricedata = this._pricedata.map((entity: PriceData) => {
+        return {
+          ...entity,
+          watched: this.watched.includes(entity.address || ''),
+        };
+      });
+      console.log(`watchlist = ${this.watched}`);
+      this.priceData$.next(this._pricedata);
+  }
+
+  public async loadWatchList() {
+    console.log('Getting watch list');
+    this.http
+      .get<response>(this.BACKEND_URL + '/users/watchlist', {
+        headers: {
+          'jwt-token': this.token,
+        },
+      })
+      .subscribe(async (data: any) => {
+        console.log(`watched = ${data.message.split(',')}`);
+        console.log(`watched = ${this.watched}`);
       });
   }
 }
