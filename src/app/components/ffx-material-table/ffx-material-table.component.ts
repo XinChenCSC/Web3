@@ -17,6 +17,7 @@ import { faStar as filledStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 
 export interface PriceData {
+  asset: string;
   watched: boolean | undefined;
   asset: string | undefined;
   symbol: string | undefined;
@@ -42,7 +43,6 @@ export class Pricedata {
 export class FfxMaterialTableComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
   displayedColumns: string[] = ['watched', 'asset', 'symbol', 'price', 'type'];
   dataSource: MatTableDataSource<PriceData>;
   filterType: MatTableFilter = MatTableFilter.STARTS_WITH;
