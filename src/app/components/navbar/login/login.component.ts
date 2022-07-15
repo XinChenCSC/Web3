@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Web3Service } from 'src/app/services/web3/web3.service';
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
-import { Web2Service } from 'src/app/services/web2/web2.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +11,7 @@ export class LoginComponent implements OnInit {
   accountList$: string[] | undefined;
   faWallet = faWallet;
 
-  constructor( private web3: Web3Service, private web2: Web2Service ){}
+  constructor( private web3: Web3Service ){}
 
   ngOnInit(): void {
   }
@@ -28,10 +27,10 @@ export class LoginComponent implements OnInit {
   }
 
   Authenticate(){
-    this.web3.login();
+    return
   }
 
   GetWatchlist(){
-    this.web3.getWatchList();
+    return
   }
 }

@@ -16,12 +16,4 @@
 
 <div>
   <div *ngIf="accountList$; then logout ; else login"></div>
-  <div>
-    <button #authenticate class="btn btn-primary" *ngIf="accountList$" (click)="Authenticate()">
-      Authenticate
-    </button>
-    <button #authenticate class="btn btn-primary" *ngIf="accountList$" (click)="GetWatchlist()">
-      GetWatchlist
-    </button>
-  </div>
 </div>

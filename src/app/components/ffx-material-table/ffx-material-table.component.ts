@@ -13,6 +13,8 @@ import {
 } from 'rxjs';
 import { Web3Service } from 'src/app/services/web3/web3.service';
 import { MatTableFilter } from 'mat-table-filter';
+import { faStar as filledStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 
 export interface PriceData {
   watched: boolean | undefined;
@@ -45,6 +47,8 @@ export class FfxMaterialTableComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<PriceData>;
   filterType: MatTableFilter = MatTableFilter.STARTS_WITH;
   filterEntity: PriceData;
+  filledStar = filledStar;
+  regularstar = regularStar;
 
   contractAddresses$: string[] = [];
 
@@ -66,5 +70,8 @@ export class FfxMaterialTableComponent implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+  }
+  ToggleWatched(item: PriceData) {
+    console.log('Toggling watched for ' + item.address);
   }
 }

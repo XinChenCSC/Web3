@@ -9,10 +9,10 @@ import { contractList } from 'src/app/resources/contracts';
 import pricefeedAbi from 'src/app/resources/abis/pricefeed';
 import { ADDRCONFIG } from 'dns';
 import { PriceData } from 'src/app/components/ffx-material-table/ffx-material-table.component';
-import { Web2Service } from '../web2/web2.service';
 import { HttpClient } from '@angular/common/http';
+import { preProcessFile } from 'typescript';
 
-interface response{
+interface response {
   publicAddress: string;
   message: string;
 }
@@ -41,9 +41,13 @@ export class Web3Service {
   private _pricedata: PriceData[] = [];
   public priceData$: Subject<PriceData[]> = new Subject<PriceData[]>();
   private token: string | undefined;
-  BACKEND_URL = 'http://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com';
+  BACKEND_URL =
+    'http://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com';
 
   constructor(@Inject(WEB3) private web3: Web3, private http: HttpClient) {
+    this.watched = [] as string[];
+    this._pricedata = [] as PriceData[];
+
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider, // required
@@ -84,9 +88,47 @@ export class Web3Service {
         hover: 'rgb(16, 26, 32)',
       },
     });
+  }
 
+  async loadData() {
     for (const key of Object.keys(contractList)) {
-      this.addresses.push(key);
+      const contractInstance = new this.web3js.eth.Contract(
+        pricefeedAbi,
+        contractList[key].address
+      );
+      let symbol: string;
+      let decimals: number;
+      let latestAnswer: number;
+      contractInstance.methods
+        .description()
+        .call({ from: this.metamaskAccounts[0] })
+        .then((res: string) => (symbol = res))
+        .then(() =>
+          contractInstance.methods
+            .latestAnswer()
+            .call({ from: this.metamaskAccounts[0] })
+            .then((res: number) => (latestAnswer = res))
+        )
+        .then(() =>
+          contractInstance.methods
+            .decimals()
+            .call({ from: this.metamaskAccounts[0] })
+            .then((res: number) => (decimals = res))
+        )
+        .then(() => {
+          this._pricedata = [
+            ...this._pricedata,
+            {
+              asset: contractList[key].asset,
+              symbol: symbol,
+              price: latestAnswer / Math.pow(10, decimals),
+              address: key,
+              watched: false,
+              type: contractList[key].assetType,
+            },
+          ];
+          this.priceData$.next(this._pricedata);
+        });
     }
   }
 
@@ -96,45 +138,32 @@ export class Web3Service {
     this.web3js = new Web3(this.provider);
     this.metamaskAccounts = await this.web3js.eth.getAccounts();
     this.metamaskAccounts$.next(this.metamaskAccounts);
-    console.log(this.metamaskAccounts);
 
-    await this.login();
-
-    this.watched = await this.getWatchList();
-
-    for (const key of Object.keys(contractList)) {
-      const contractInstance = new this.web3js.eth.Contract(
-        pricefeedAbi,
-        contractList[key].address
-      );
-      let symbol: string;
-      let decimals: number;
-      let latestAnswer: number;
-
-      contractInstance.methods.description()
-        .call({ from: this.metamaskAccounts[0]})
-        .then((res: string) => (symbol = res))
-      .then(() => contractInstance.methods.latestAnswer()
-        .call({ from: this.metamaskAccounts[0] })
-        .then((res:number) => latestAnswer = res))
-      .then(() => contractInstance.methods.decimals()
-        .call({ from: this.metamaskAccounts[0]})
-        .then((res: number) => decimals = res))
-      .then(() => {
-        this._pricedata = [
-          ...this._pricedata,
-          {
-            asset: contractList[key].asset,
-            symbol: symbol,
-            price: latestAnswer / Math.pow(10, decimals),
-            address: key,
-            watched: this.watched.includes(key),
-            type: contractList[key].assetType,
+    await this.loadData();
+    this.getToken().then((res: string) => {
+      this.token = res;
+      console.log('Getting watch list');
+      this.http
+        .get<response>(this.BACKEND_URL + '/users/watchlist', {
+          headers: {
+            'jwt-token': this.token,
           },
-        ];
-        this.priceData$.next(this._pricedata);
-      })
-    }
+        })
+        .subscribe(async (data: any) => {
+          console.log(`watched = ${data[0].address}`);
+          this.watched = data.map((x: any) => x.address);
+          console.log(this.watched);
+
+          this._pricedata = this._pricedata.map((entity: PriceData) => {
+            return {
+              ...entity,
+              watched: this.watched.includes(entity.address || ''),
+            };
+          });
+          console.log(`watchlist = ${this.watched}`);
+          this.priceData$.next(this._pricedata);
+        });
+    });
   }
 
   async disconnectAccount(): Promise<void> {
@@ -150,61 +179,70 @@ export class Web3Service {
   }
 
   async signMessage(message: string): Promise<string> {
-    let signature: string;
-    console.log(this.metamaskAccounts);
-    return this.web3.eth.personal.sign(message, this.metamaskAccounts[0], 'null')
+    return this.web3.eth.personal.sign(
+      message,
+      this.metamaskAccounts[0],
+      'null'
+    );
   }
 
   getAccounts(): string[] {
     return this.metamaskAccounts;
   }
 
-  public async login() {
-    let accounts:string[] = this.getAccounts();
-    let nonce: string;
-    let signature: string;
+  public async getToken(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      let accounts: string[] = this.getAccounts();
+      let nonce: string;
+      let signature: string;
 
-    const request_body = {
-      publicAddress: accounts[0],
-      message: 'null'
-    }
+      const request_body = {
+        publicAddress: accounts[0],
+        message: 'null',
+      };
 
-    console.log(`Request body: ${JSON.stringify(request_body)}`)
+      console.log(`Request body: ${JSON.stringify(request_body)}`);
 
-    // fetch the nonce from the backend
-    this.http.post<response>( this.BACKEND_URL + '/login/get',
-      { publicAddress: accounts[0], message: 'null' },
-      { headers: { 'Content-Type': 'application/json' }})
-      .subscribe(async (data: any) => {
-        nonce = data.message;
-        console.log(`nonce = ${nonce}`);
-        signature = await this.signMessage(nonce);
-        console.log(`signature ${signature}`);
+      // fetch the nonce from the backend
+      this.http
+        .post<response>(
+          this.BACKEND_URL + '/login/get',
+          { publicAddress: accounts[0], message: 'null' },
+          { headers: { 'Content-Type': 'application/json' } }
+        )
+        .subscribe(async (data: any) => {
+          nonce = data.message;
+          console.log(`nonce = ${nonce}`);
+          signature = await this.signMessage(nonce);
+          console.log(`signature ${signature}`);
 
-        // sign and send the request to the backend
-        this.http.post<response>( this.BACKEND_URL + '/login/verify',
-        { publicAddress: accounts[0], message: signature },
-        { headers: { 'Content-Type': 'application/json' }})
-          .subscribe(async (data: any) => {
-            console.log(`data = ${data.publicAddress}`);
-            console.log(`data.message = ${data.message}`);
-            this.token = data.message;
-          })
-      })
-    }
-
-    public async getWatchList(): Promise<string[]> {
-    // fetch the nonce from the backend
-    return new Promise<string[]>(async (resolve, reject) => {
-      this.http.get<response>( this.BACKEND_URL + '/users/watchlist',
-        {'headers':{
-          'jwt-token': this.token,
-        }}).subscribe(async (data: any) => {
-          console.log(`data = ${data}`);
-          console.log(`data = ${data.message}`);
-          resolve(data.message);
-        })
-    })
+          // sign and send the request to the backend
+          this.http
+            .post<response>(
+              this.BACKEND_URL + '/login/verify',
+              { publicAddress: accounts[0], message: signature },
+              { headers: { 'Content-Type': 'application/json' } }
+            )
+            .subscribe(async (data: any) => {
+              console.log(`address = ${data.publicAddress}`);
+              console.log(`token = ${data.message}`);
+              resolve(data.message);
+            });
+        });
+    });
   }
 
+  public async loadWatchList() {
+    console.log('Getting watch list');
+    this.http
+      .get<response>(this.BACKEND_URL + '/users/watchlist', {
+        headers: {
+          'jwt-token': this.token,
+        },
+      })
+      .subscribe(async (data: any) => {
+        console.log(`watched = ${data.message.split(',')}`);
+        console.log(`watched = ${this.watched}`);
+      });
+  }
 }
