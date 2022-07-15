@@ -232,6 +232,21 @@ export class Web3Service {
     });
   }
 
+  public async toggleWatched(address: string): Promise<void> {
+    this.watched = this.watched.includes(address)
+      ? this.watched.filter((x) => x !== address)
+      : [...this.watched, address];
+
+      this._pricedata = this._pricedata.map((entity: PriceData) => {
+        return {
+          ...entity,
+          watched: this.watched.includes(entity.address || ''),
+        };
+      });
+      console.log(`watchlist = ${this.watched}`);
+      this.priceData$.next(this._pricedata);
+  }
+
   public async loadWatchList() {
     console.log('Getting watch list');
     this.http

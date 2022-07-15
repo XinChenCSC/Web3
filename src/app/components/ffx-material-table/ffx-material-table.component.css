@@ -5,3 +5,7 @@ table {
 th.mat-sort-header-sorted {
   color: black;
 }
+
+td.mat-cell {
+  padding: 0.25rem 0.5rem;
+}

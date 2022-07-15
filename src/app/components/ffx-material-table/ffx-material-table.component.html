@@ -8,38 +8,40 @@
     </ng-container>
 
     <!-- symbol Column -->
-    <ng-container matColumnDef="symbol">
+    <ng-container matColumnDef="symbol" class="symbol">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>
         <mat-form-field appearance="outline">
           <input matInput placeholder="Pair" [(ngModel)]="filterEntity.symbol">
         </mat-form-field>
       </th>
-      <td mat-cell *matCellDef="let entity">{{ entity.symbol }}</td>
+      <td mat-cell *matCellDef="let entity" class="symbol">{{ entity.symbol }}</td>
     </ng-container>
 
     <!-- price Column -->
     <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-      <td mat-cell *matCellDef="let entity">{{ entity.price }}</td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="price">Price</th>
+      <td mat-cell *matCellDef="let entity" class="price">
+        ${{ entity.price.toFixed(4)}}
+      </td>
     </ng-container>
 
     <!-- watched Column -->
     <ng-container matColumnDef="watched">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="watched">
         <mat-select placeholder="Watched" [(ngModel)]="filterEntity.watched">
           <mat-option *ngFor="let opt of [['',''], ['True', true], ['False', false]]" [value]="opt[1]">
             {{ opt[0] }}
           </mat-option>
         </mat-select>
       </mat-header-cell>
-      <td mat-cell *matCellDef="let entity">
-        <fa-icon [icon]="entity.watched ? filledStar : regularstar "></fa-icon>
+      <td mat-cell *matCellDef="let entity" class="watched">
+        <fa-icon [icon]="entity.watched ? filledStar : regularstar " (click)="ToggleWatched(entity)" ></fa-icon>
       </td>
     </ng-container>
 
     <!-- type Column -->
     <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="type">
         <mat-form-field appearance="outline">
           <mat-select placeholder="Type" [(ngModel)]="filterEntity.type">
             <mat-option *ngFor="let opt of ['', 'Crypto', 'Forex', 'Equities', 'Commodities' ]" [value]="opt">
@@ -48,17 +50,17 @@
           </mat-select>
         </mat-form-field>
       </th>
-      <td mat-cell *matCellDef="let entity">{{ entity.type }}</td>
+      <td mat-cell *matCellDef="let entity" class="type">{{ entity.type }}</td>
     </ng-container>
 
         <!-- type Column -->
     <ng-container matColumnDef="asset">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="asset">
         <mat-form-field appearance="outline">
           <input matInput placeholder="Asset" [(ngModel)]="filterEntity.asset">
         </mat-form-field>
       </th>
-      <td mat-cell *matCellDef="let entity">{{ entity.asset }}</td>
+      <td mat-cell *matCellDef="let entity" class="asset">{{ entity.asset }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -73,5 +73,6 @@ export class FfxMaterialTableComponent implements AfterViewInit, OnInit {
   }
   ToggleWatched(item: PriceData) {
     console.log('Toggling watched for ' + item.address);
+    this.web3.toggleWatched(item.address);
   }
 }
