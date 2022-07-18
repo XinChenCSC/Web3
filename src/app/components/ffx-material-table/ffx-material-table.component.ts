@@ -39,6 +39,7 @@ export class Pricedata {
   templateUrl: './ffx-material-table.component.html',
   styleUrls: ['./ffx-material-table.component.css'],
 })
+
 export class FfxMaterialTableComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;

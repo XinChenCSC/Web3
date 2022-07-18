@@ -1,11 +1,28 @@
-table {
-  width: 100%;
-}
-
 th.mat-sort-header-sorted {
   color: black;
+  text-align: center;
+  justify-content: center;
 }
 
-td.mat-cell {
-  padding: 0.25rem 0.5rem;
+.mat-cell {
+  text-align: center;
+  vertical-align: middle
 }
+
+
+.mat-table {
+  max-width: 100%;
+  margin-bottom: 1rem;
+  display: table;
+  border-collapse: collapse;
+  margin: 0px auto;
+}
+
+.connect-card {
+  margin: 0 auto;
+  min-height: 10rem;
+  max-width: 400px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+

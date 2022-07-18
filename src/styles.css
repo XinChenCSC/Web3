@@ -1,0 +1,12 @@
+svg.svg-inline--fa.fa-star {
+  color: #ffb400;
+  font-size: large;
+  cursor: pointer;
+
+}
+
+svg.svg-inline--fa.fa-star:hover {
+  font-size: x-large;
+  cursor: pointer;
+  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+}

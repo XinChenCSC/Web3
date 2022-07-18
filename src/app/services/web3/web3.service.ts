@@ -162,8 +162,9 @@ export class Web3Service {
           console.log(`watchlist = ${this.watched}`);
           this.priceData$.next(this._pricedata);
         });
+        this.priceData$.next(this._pricedata);
     });
-    this.priceData$ = this.priceData$;
+    this.priceData$.next(this._pricedata);
   }
 
   async disconnectAccount(): Promise<void> {
@@ -250,7 +251,9 @@ export class Web3Service {
     const payload = this.watched.map((x: string) => {
       return {"address": x};
     });
-    console.log(`Sending ${payload}`)
+
+    console.log(`Sending ${JSON.stringify(payload)}`)
+
     this.http.post<response>(
       this.BACKEND_URL + '/users/replace',
       payload,

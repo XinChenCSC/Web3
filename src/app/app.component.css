@@ -2,9 +2,13 @@
   min-height: 90vh;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
+  max-width: 100%;
 }
 
 #navbar-container{
   height: 5rem;
   z-index: 1000;
 }
+
+
