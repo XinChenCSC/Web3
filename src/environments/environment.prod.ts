@@ -1,3 +1,6 @@
 export const environment = {
-  infuraId: ''
+
+  production: true
 };
+
+export const url = `http://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com`;

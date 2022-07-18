@@ -12,7 +12,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
-import { MatNativeDateModule} from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { PleaseLogInComponent } from './components/please-log-in/please-log-in.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { FfxTrComponent } from './components/ffx-table/ffx-tr/ffx-tr.component';
@@ -21,8 +21,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableFilterModule } from 'mat-table-filter';
 import { HttpClientModule } from '@angular/common/http';
-
-
 
 const appRoutes: Routes = [
   { path: '', component: FfxMaterialTableComponent },

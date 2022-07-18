@@ -1,5 +1,6 @@
 <div class='table-container'>
-  <mat-table matTableFilter [exampleEntity]="filterEntity" [filterType]="filterType" [dataSource]="dataSource" matSort class="">
+  <mat-table matTableFilter [exampleEntity]="filterEntity" [filterType]="filterType" [dataSource]="dataSource" matSort
+    class="">
     <!-- address Column -->
     <ng-container matColumnDef="address">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
@@ -34,7 +35,7 @@
         </mat-select>
       </mat-header-cell>
       <td mat-cell *matCellDef="let entity" class="watched">
-        <fa-icon [icon]="entity.watched ? filledStar : regularstar " (click)="ToggleWatched(entity)" ></fa-icon>
+        <fa-icon [icon]="entity.watched ? filledStar : regularstar " (click)="ToggleWatched(entity)"></fa-icon>
       </td>
     </ng-container>
 
@@ -52,7 +53,7 @@
       <td mat-cell *matCellDef="let entity" class="type">{{ entity.type }}</td>
     </ng-container>
 
-        <!-- type Column -->
+    <!-- type Column -->
     <ng-container matColumnDef="asset">
       <th mat-header-cell *matHeaderCellDef mat-sort-header class="asset">
         <mat-form-field appearance="outline">
@@ -74,7 +75,7 @@
 
   <mat-card class="connect-card" *ngIf="!dataSource.data[1]">
     <mat-card-content>
-        Please Connect to a web3 provider such as MetaMask.
+      Please Connect to a web3 provider such as MetaMask.
     </mat-card-content>
   </mat-card>
 
