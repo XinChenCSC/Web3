@@ -44,6 +44,8 @@ export class Web3Service {
   BACKEND_URL =
     'http://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com';
 
+  INFURA_ID = '39f269efdc464dbf97ac75f0baebb5a7';
+
   constructor(@Inject(WEB3) private web3: Web3, private http: HttpClient) {
     this.watched = [] as string[];
     this._pricedata = [] as PriceData[];
@@ -52,7 +54,7 @@ export class Web3Service {
       walletconnect: {
         package: WalletConnectProvider, // required
         options: {
-          infuraId: '39f269efdc464dbf97ac75f0baebb5a7',
+          infuraId: this.INFURA_ID,
           description: 'Scan the qr code and sign in',
           qrcodeModalOptions: {
             mobileLinks: [
@@ -123,7 +125,7 @@ export class Web3Service {
               symbol: symbol,
               price: latestAnswer / Math.pow(10, decimals),
               address: key,
-              watched: false,
+              watched: undefined,
               type: contractList[key].assetType,
             },
           ];
@@ -164,7 +166,15 @@ export class Web3Service {
         });
         this.priceData$.next(this._pricedata);
     });
+
+    this._pricedata = this._pricedata.map((entity: PriceData) => {
+      return {
+        ...entity,
+        watched: this.watched.includes(entity.address || ''),
+      };
+    });
     this.priceData$.next(this._pricedata);
+
   }
 
   async disconnectAccount(): Promise<void> {
