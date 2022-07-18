@@ -153,7 +153,6 @@ export class Web3Service {
           console.log(`watched = ${data[0].address}`);
           this.watched = data.map((x: any) => x.address);
           console.log(this.watched);
-
           this._pricedata = this._pricedata.map((entity: PriceData) => {
             return {
               ...entity,
@@ -164,6 +163,7 @@ export class Web3Service {
           this.priceData$.next(this._pricedata);
         });
     });
+    this.priceData$ = this.priceData$;
   }
 
   async disconnectAccount(): Promise<void> {
@@ -233,31 +233,30 @@ export class Web3Service {
   }
 
   public async toggleWatched(address: string): Promise<void> {
+
     this.watched = this.watched.includes(address)
       ? this.watched.filter((x) => x !== address)
       : [...this.watched, address];
 
-      this._pricedata = this._pricedata.map((entity: PriceData) => {
-        return {
-          ...entity,
-          watched: this.watched.includes(entity.address || ''),
-        };
-      });
-      console.log(`watchlist = ${this.watched}`);
-      this.priceData$.next(this._pricedata);
-  }
+    this._pricedata = this._pricedata.map((entity: PriceData) => {
+      return {
+        ...entity,
+        watched: this.watched.includes(entity.address || ''),
+      };
+    });
+    this.priceData$.next(this._pricedata);
 
-  public async loadWatchList() {
-    console.log('Getting watch list');
-    this.http
-      .get<response>(this.BACKEND_URL + '/users/watchlist', {
-        headers: {
-          'jwt-token': this.token,
-        },
-      })
-      .subscribe(async (data: any) => {
-        console.log(`watched = ${data.message.split(',')}`);
-        console.log(`watched = ${this.watched}`);
-      });
+
+    const payload = this.watched.map((x: string) => {
+      return {"address": x};
+    });
+    console.log(`Sending ${payload}`)
+    this.http.post<response>(
+      this.BACKEND_URL + '/users/replace',
+      payload,
+      { headers: { 'jwt-token': this.token }}
+    ).subscribe(async (data: any) => {
+      console.log(data);
+    });
   }
 }
