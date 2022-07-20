@@ -1,7 +1,7 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { Web3Service } from 'src/app/services/web3/web3.service';

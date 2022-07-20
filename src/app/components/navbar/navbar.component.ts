@@ -7,12 +7,9 @@ import { faChartLine } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   faChartLine = faChartLine;
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+ 
 
 }

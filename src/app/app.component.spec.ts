@@ -21,7 +21,7 @@ describe('AppComponent', () => {
   });
 
   it(`should have as title 'angularweb3'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    TestBed.createComponent(AppComponent);
 
   });
 

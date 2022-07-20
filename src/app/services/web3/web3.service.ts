@@ -4,13 +4,13 @@ import { Subject, Observable } from 'rxjs';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import { provider } from 'web3-core';
+
 import { contractList } from 'src/app/resources/contracts';
 import pricefeedAbi from 'src/app/resources/abis/pricefeed';
-import { ADDRCONFIG } from 'dns';
+
 import { PriceData } from 'src/app/components/ffx-material-table/ffx-material-table.component';
 import { HttpClient } from '@angular/common/http';
-import { preProcessFile } from 'typescript';
+
 
 interface response {
   publicAddress: string;
@@ -28,7 +28,7 @@ export class Web3Service {
   private web3Modal;
   web3js: any;
   provider: any;
-  private balance: any;
+
   public addresses: string[] = [];
 
   public contractAddresses$ = new Subject<string[]>();
@@ -167,12 +167,7 @@ export class Web3Service {
         this.priceData$.next(this._pricedata);
     });
 
-    this._pricedata = this._pricedata.map((entity: PriceData) => {
-      return {
-        ...entity,
-        watched: this.watched.includes(entity.address || ''),
-      };
-    });
+  
     this.priceData$.next(this._pricedata);
 
   }

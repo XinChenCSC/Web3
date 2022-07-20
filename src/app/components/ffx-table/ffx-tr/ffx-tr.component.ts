@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { faStar as filledStar  } from '@fortawesome/free-solid-svg-icons';
 import { faStar as regularStar }  from '@fortawesome/free-regular-svg-icons' ;
 import { Web3Service } from 'src/app/services/web3/web3.service';
-import { Console } from 'console';
+
 
 @Component({
   selector: '[app-ffx-tr]',
@@ -27,11 +27,6 @@ export class FfxTrComponent implements OnInit {
   ngOnInit() {
     console.log("Row for " + this.address + " created");
       if(this.address){
-      // this.web3.watched$[this.address].subscribe({
-      //   next: (w:any) => {
-      //     this.Watched = w;
-      //   }});
-
       this.web3.symbol$[this.address].subscribe({
         next: (s:any) => {
           this.Symbol = s;

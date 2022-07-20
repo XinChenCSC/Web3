@@ -5,11 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './please-log-in.component.html',
   styleUrls: ['./please-log-in.component.css']
 })
-export class PleaseLogInComponent implements OnInit {
+export class PleaseLogInComponent {
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

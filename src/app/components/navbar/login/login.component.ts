@@ -7,14 +7,13 @@ import { faWallet } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent  {
   accountList$: string[] | undefined;
   faWallet = faWallet;
 
   constructor( private web3: Web3Service ){}
 
-  ngOnInit(): void {
-  }
+ 
 
   Connect() {
     this.web3.connectAccount();

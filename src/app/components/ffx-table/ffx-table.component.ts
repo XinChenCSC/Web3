@@ -5,7 +5,7 @@ import {
   animate,
   style,
 } from '@angular/animations';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Web3Service } from 'src/app/services/web3/web3.service';
 @Component({
   selector: 'app-ffx-table',
