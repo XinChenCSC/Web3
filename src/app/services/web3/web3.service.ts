@@ -42,7 +42,7 @@ export class Web3Service {
   public priceData$: Subject<PriceData[]> = new Subject<PriceData[]>();
   private token: string | undefined;
   BACKEND_URL =
-    'telnet://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com';
+    'https://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com';
 
   INFURA_ID = '39f269efdc464dbf97ac75f0baebb5a7';
 
