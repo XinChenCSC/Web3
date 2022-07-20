@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { WEB3 } from '../../core/web3';
-import { Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
@@ -12,7 +12,7 @@ import { PriceData } from 'src/app/components/ffx-material-table/ffx-material-ta
 import { HttpClient } from '@angular/common/http';
 
 
-interface response {
+interface Response {
   publicAddress: string;
   message: string;
 }
@@ -146,7 +146,7 @@ export class Web3Service {
       this.token = res;
       console.log('Getting watch list');
       this.http
-        .get<response>(this.BACKEND_URL + '/users/watchlist', {
+        .get<Response>(this.BACKEND_URL + '/users/watchlist', {
           headers: {
             'jwt-token': this.token,
           },
@@ -166,7 +166,12 @@ export class Web3Service {
         });
         this.priceData$.next(this._pricedata);
     });
-
+    this._pricedata = this._pricedata.map((entity: PriceData) => {		
+      return {		
+       ...entity,		
+       watched: this.watched.includes(entity.address || ''),		
+     };		
+   });
   
     this.priceData$.next(this._pricedata);
 
@@ -197,7 +202,7 @@ export class Web3Service {
   }
 
   public async getToken(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve) => {
       let accounts: string[] = this.getAccounts();
       let nonce: string;
       let signature: string;
@@ -211,7 +216,7 @@ export class Web3Service {
 
       // fetch the nonce from the backend
       this.http
-        .post<response>(
+        .post<Response>(
           this.BACKEND_URL + '/login/get',
           { publicAddress: accounts[0], message: 'null' },
           { headers: { 'Content-Type': 'application/json' } }
@@ -224,15 +229,15 @@ export class Web3Service {
 
           // sign and send the request to the backend
           this.http
-            .post<response>(
+            .post<Response>(
               this.BACKEND_URL + '/login/verify',
               { publicAddress: accounts[0], message: signature },
               { headers: { 'Content-Type': 'application/json' } }
             )
-            .subscribe(async (data: any) => {
-              console.log(`address = ${data.publicAddress}`);
-              console.log(`token = ${data.message}`);
-              resolve(data.message);
+            .subscribe(async (data1: any) => {
+              console.log(`address = ${data1.publicAddress}`);
+              console.log(`token = ${data1.message}`);
+              resolve(data1.message);
             });
         });
     });
@@ -259,7 +264,7 @@ export class Web3Service {
 
     console.log(`Sending ${JSON.stringify(payload)}`)
 
-    this.http.post<response>(
+    this.http.post<Response>(
       this.BACKEND_URL + '/users/replace',
       payload,
       { headers: { 'jwt-token': this.token }}

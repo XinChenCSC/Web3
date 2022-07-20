@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Web3Service } from 'src/app/services/web3/web3.service';
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
 
