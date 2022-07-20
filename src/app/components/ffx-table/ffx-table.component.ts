@@ -6,9 +6,7 @@ import {
   style,
 } from '@angular/animations';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Web3Service } from 'src/app/services/web3/web3.service';
-import { contractList } from 'src/app/resources/contracts'
 @Component({
   selector: 'app-ffx-table',
   templateUrl: './ffx-table.component.html',

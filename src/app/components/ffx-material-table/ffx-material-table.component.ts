@@ -3,14 +3,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import {
-  BehaviorSubject,
-  Observable,
-  Subject,
-  Subscription,
-  of,
-  observable,
-} from 'rxjs';
+
 import { Web3Service } from 'src/app/services/web3/web3.service';
 import { MatTableFilter } from 'mat-table-filter';
 import { faStar as filledStar } from '@fortawesome/free-solid-svg-icons';
