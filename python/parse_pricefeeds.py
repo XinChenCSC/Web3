@@ -846,7 +846,7 @@ if __name__ == '__main__':
 
     try:
       asset, assert_type, address = raw_contract_data[i+1].split('\t')
-    except:
+    except TypeError as e:
       continue
 
     print(name, asset, assert_type, address)
