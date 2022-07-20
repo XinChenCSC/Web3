@@ -1,6 +1,4 @@
 export const environment = {
-
-  production: true
+  production: true,
 };
-
-export const url = `http://fantasticforex-env.eba-anp2m5xc.us-east-2.elasticbeanstalk.com`;
+const url = `http://fantastic-forex.s3-website.us-east-2.amazonaws.com`;

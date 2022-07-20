@@ -12,10 +12,11 @@ th.mat-sort-header-sorted {
 
 .mat-table {
   max-width: 100%;
+  margin: 0px auto;
   margin-bottom: 1rem;
   display: table;
   border-collapse: collapse;
-  margin: 0px auto;
+  
 }
 
 .connect-card {
